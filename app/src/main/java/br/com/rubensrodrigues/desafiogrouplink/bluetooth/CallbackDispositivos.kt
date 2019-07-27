@@ -3,6 +3,7 @@ package br.com.rubensrodrigues.desafiogrouplink.bluetooth
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import android.util.Log
 import android.widget.TextView
 import br.com.rubensrodrigues.desafiogrouplink.model.Beacon
 
@@ -15,6 +16,7 @@ class CallbackDispositivos(val activity: Activity, val infoMajor: TextView, val 
                 if (scanRecord != null){
                     val beacon = Beacon(scanRecord)
                     if (beacon.uuid == "20cc4ce3-5d0b-42c8-a57c-ed6ee945411e"){
+                        Log.i("SCAN", "Major: ${beacon.major} - Minor: ${beacon.minor}")
                         infoMajor.text = beacon.major.toString()
                         infoMinor.text = beacon.minor.toString()
                     }

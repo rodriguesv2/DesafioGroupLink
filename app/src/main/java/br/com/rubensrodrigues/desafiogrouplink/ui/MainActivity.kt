@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.annotation.NonNull
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
 import br.com.rubensrodrigues.desafiogrouplink.R
 import br.com.rubensrodrigues.desafiogrouplink.bluetooth.CallbackDispositivos
@@ -19,13 +20,13 @@ class MainActivity : AppCompatActivity() {
 
     private val REQUEST_ENABLE_BT = 1
     private var scanning = false
-    private val SCAN_PERIOD = 10000L
 
     private val infoMajor by lazy { main_major }
     private val infoMinor by lazy { main_minor }
     private val campoScanTime by lazy { main_campo_scantime }
     private val botao by lazy { main_botao_scan }
 
+    private val callbackDispositivos by lazy { CallbackDispositivos(this, infoMajor, infoMinor) }
     private val bluetoothAdapter: BluetoothAdapter? by lazy {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
@@ -36,12 +37,43 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         verificaSuporteBLE()
+        ativarBluetoothCasoDesligado()
         Permissoes.checaPermissoesLocalizacao(this)
 
+        acaoBotao()
+    }
+
+    private fun acaoBotao() {
         botao.setOnClickListener {
-            if (Permissoes.checaPermissoesLocalizacao(this)){
-                scanLeDevice(true)
+            if (Permissoes.checaPermissoesLocalizacao(this)) {
+
+                if (!scanning) {
+                    val tempo = campoScanTime.text.toString().toLong()
+                    scanLeDevice(true, tempo*1000)
+                    desabilitaCampos()
+                    Log.i("BOTAO", "FALSO")
+                }else{
+                    scanLeDevice(false)
+                    habilitaCampos()
+                    Log.i("BOTAO", "VERDADEIRO")
+                }
             }
+        }
+    }
+
+    private fun habilitaCampos() {
+        botao.text = "Iniciar Scan"
+        campoScanTime.isEnabled = true
+    }
+
+    private fun desabilitaCampos() {
+        botao.text = "Parar Scan"
+        campoScanTime.isEnabled = false
+    }
+
+    private fun ativarBluetoothCasoDesligado() {
+        if (temBT()) {
+            ativarBT()
         }
     }
 
@@ -50,7 +82,7 @@ class MainActivity : AppCompatActivity() {
 
         if (bluetoothAdapter == null) {
             valida = false
-            Toast.makeText(this, "Celular não suporta BT", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Celular não suporta Bluetooth", Toast.LENGTH_SHORT).show()
         }
 
         return valida
@@ -89,15 +121,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun scanLeDevice(enable: Boolean) {
-
-        val callbackDispositivos = CallbackDispositivos(this, infoMajor, infoMinor)
-
+    private fun scanLeDevice(enable: Boolean, tempo: Long = 0L) {
         if (enable) {
             Handler().postDelayed({
                 scanning = false
                 bluetoothAdapter!!.stopLeScan(callbackDispositivos)
-            }, SCAN_PERIOD)
+                habilitaCampos()
+            }, tempo)
 
             scanning = true
             bluetoothAdapter!!.startLeScan(callbackDispositivos)
