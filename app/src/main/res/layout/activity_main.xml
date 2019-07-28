@@ -70,6 +70,18 @@
             app:layout_constraintBottom_toBottomOf="@id/main_minor_label"
             tools:text="20"/>
 
+    <TextView
+            android:id="@+id/main_alerta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Beacon não encontrado"
+            android:textSize="24sp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
     <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -81,7 +93,7 @@
                 android:id="@+id/main_campo_scantime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="10"
+                android:text="60"
                 android:inputType="number"
                 android:maxLines="1"
                 android:maxLength="7"

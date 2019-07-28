@@ -10,6 +10,7 @@ import android.os.Handler
 import android.support.annotation.NonNull
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import br.com.rubensrodrigues.desafiogrouplink.R
 import br.com.rubensrodrigues.desafiogrouplink.bluetooth.CallbackDispositivos
@@ -23,10 +24,14 @@ class MainActivity : AppCompatActivity() {
 
     private val infoMajor by lazy { main_major }
     private val infoMinor by lazy { main_minor }
+    private val alerta by lazy { main_alerta }
     private val campoScanTime by lazy { main_campo_scantime }
     private val botao by lazy { main_botao_scan }
 
-    private val callbackDispositivos by lazy { CallbackDispositivos(this, infoMajor, infoMinor) }
+    private val callbackDispositivos by lazy {
+        CallbackDispositivos(this, infoMajor, infoMinor, alerta)
+    }
+
     private val bluetoothAdapter: BluetoothAdapter? by lazy {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothManager.adapter
@@ -48,7 +53,14 @@ class MainActivity : AppCompatActivity() {
             if (Permissoes.checaPermissoesLocalizacao(this)) {
 
                 if (!scanning) {
-                    val tempo = campoScanTime.text.toString().toLong()
+                    var tempo: Long
+                    try {
+                        tempo = campoScanTime.text.toString().toLong()
+                    }catch (ex: NumberFormatException){
+                        tempo = 60
+                        campoScanTime.setText("60")
+                    }
+
                     scanLeDevice(true, tempo*1000)
                     desabilitaCampos()
                     Log.i("BOTAO", "FALSO")
@@ -64,6 +76,9 @@ class MainActivity : AppCompatActivity() {
     private fun habilitaCampos() {
         botao.text = "Iniciar Scan"
         campoScanTime.isEnabled = true
+        infoMajor.text = ""
+        infoMinor.text = ""
+        alerta.visibility = View.INVISIBLE
     }
 
     private fun desabilitaCampos() {
