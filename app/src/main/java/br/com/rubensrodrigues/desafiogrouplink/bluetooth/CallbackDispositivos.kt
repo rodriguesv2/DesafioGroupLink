@@ -7,12 +7,14 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import br.com.rubensrodrigues.desafiogrouplink.model.Beacon
+import br.com.rubensrodrigues.desafiogrouplink.recyclerview.ListaAdapter
 import java.util.*
 
 class CallbackDispositivos(private val activity: Activity,
                            private val infoMajor: TextView,
                            private val infoMinor: TextView,
-                           private val alerta: TextView): BluetoothAdapter.LeScanCallback {
+                           private val alerta: TextView,
+                           private val listaAdapter: ListaAdapter): BluetoothAdapter.LeScanCallback {
 
     var ultimaAtualizacaoMillis = Calendar.getInstance().timeInMillis
 
@@ -20,7 +22,9 @@ class CallbackDispositivos(private val activity: Activity,
 
         activity.runOnUiThread {
             if (scanRecord != null){
-                val beacon = Beacon(scanRecord)
+                val beacon = Beacon(scanRecord, device!!)
+                listaAdapter.adiciona(beacon)
+
                 if (beacon.uuid == "20cc4ce3-5d0b-42c8-a57c-ed6ee945411e"){
                     Log.i("SCAN", "Major: ${beacon.major} - Minor: ${beacon.minor} - dBm: $rssi")
                     infoMajor.text = beacon.major.toString()
@@ -39,5 +43,9 @@ class CallbackDispositivos(private val activity: Activity,
 
             }
         }
+    }
+
+    fun limparLista(){
+        listaAdapter.limpaLista()
     }
 }

@@ -1,9 +1,12 @@
 package br.com.rubensrodrigues.desafiogrouplink.model
 
+import android.bluetooth.BluetoothDevice
 import java.nio.ByteBuffer
 import java.util.*
 
-class Beacon(private val scanRecord: ByteArray) {
+class Beacon(private val scanRecord: ByteArray,
+             val device: BluetoothDevice
+) {
 
     val uuid by lazy { parseUUID() }
     val major by lazy { parseMajor() }
@@ -45,6 +48,25 @@ class Beacon(private val scanRecord: ByteArray) {
         }
 
         return ByteBuffer.wrap(minorByte).char.toInt()
+    }
+
+    fun ehIbeacon(): Boolean{
+        val ibeaconBytes = ByteArray(4)
+
+        for (i in 0..3) {
+            ibeaconBytes[i] = scanRecord[i]
+        }
+
+        return bytesToHex(ibeaconBytes) == "1aff4c00"
+    }
+
+    private fun bytesToHex(hashInBytes: ByteArray): String {
+
+        val sb = StringBuilder()
+        for (b in hashInBytes) {
+            sb.append(String.format("%02x", b))
+        }
+        return sb.toString()
     }
 
 }
