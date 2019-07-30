@@ -11,12 +11,10 @@ import android.support.annotation.NonNull
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.widget.ListAdapter
 import android.widget.Toast
 import br.com.rubensrodrigues.desafiogrouplink.R
 import br.com.rubensrodrigues.desafiogrouplink.bluetooth.CallbackDispositivos
-import br.com.rubensrodrigues.desafiogrouplink.model.Beacon
-import br.com.rubensrodrigues.desafiogrouplink.recyclerview.ListaAdapter
+import br.com.rubensrodrigues.desafiogrouplink.recyclerview.adapter.ListaAdapter
 import br.com.rubensrodrigues.desafiogrouplink.util.Permissoes
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -32,7 +30,8 @@ class MainActivity : AppCompatActivity() {
     private val botao by lazy { main_botao_scan }
     private val lista by lazy { main_lista }
 
-    private val listaAdapter = ListaAdapter(this, mutableListOf())
+    private val listaAdapter =
+        ListaAdapter(this, mutableListOf())
 
     private val callbackDispositivos by lazy {
         CallbackDispositivos(this, infoMajor, infoMinor, alerta, listaAdapter)

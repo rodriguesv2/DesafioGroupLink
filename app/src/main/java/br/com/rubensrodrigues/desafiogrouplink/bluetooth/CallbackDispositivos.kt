@@ -7,14 +7,15 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import br.com.rubensrodrigues.desafiogrouplink.model.Beacon
-import br.com.rubensrodrigues.desafiogrouplink.recyclerview.ListaAdapter
+import br.com.rubensrodrigues.desafiogrouplink.recyclerview.adapter.ListaAdapter
 import java.util.*
 
 class CallbackDispositivos(private val activity: Activity,
                            private val infoMajor: TextView,
                            private val infoMinor: TextView,
                            private val alerta: TextView,
-                           private val listaAdapter: ListaAdapter): BluetoothAdapter.LeScanCallback {
+                           private val listaAdapter: ListaAdapter
+): BluetoothAdapter.LeScanCallback {
 
     var ultimaAtualizacaoMillis = Calendar.getInstance().timeInMillis
 
